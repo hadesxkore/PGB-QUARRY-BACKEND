@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build: .
+    container_name: quarry-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/quarrywebsystem
+    depends_on:
+      - mongo
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+    networks:
+      - quarry-network
+
+  # MongoDB Database
+  mongo:
+    image: mongo:7.0
+    container_name: quarry-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=quarrywebsystem
+    restart: unless-stopped
+    networks:
+      - quarry-network
+
+volumes:
+  mongo-data:
+
+networks:
+  quarry-network:
+    driver: bridge
