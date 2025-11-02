@@ -5,7 +5,7 @@ import User from '../models/User.model.js';
 // @access  Public
 export const register = async (req, res, next) => {
   try {
-    const { username, name, email, password } = req.body;
+    const { username, name, email, password, contactNumber, location, role } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ 
@@ -23,7 +23,10 @@ export const register = async (req, res, next) => {
       username: username.toLowerCase(),
       name,
       email,
-      password
+      password,
+      contactNumber,
+      location,
+      role: role || 'user'
     });
 
     // Create token
@@ -37,6 +40,9 @@ export const register = async (req, res, next) => {
         username: user.username,
         name: user.name,
         email: user.email,
+        contactNumber: user.contactNumber,
+        location: user.location,
+        company: user.company,
         role: user.role
       }
     });
@@ -99,6 +105,9 @@ export const login = async (req, res, next) => {
         username: user.username,
         name: user.name,
         email: user.email,
+        contactNumber: user.contactNumber,
+        location: user.location,
+        company: user.company,
         role: user.role,
         avatar: user.avatar
       }

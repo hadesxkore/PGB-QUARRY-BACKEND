@@ -11,6 +11,10 @@ import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import truckRoutes from './routes/truck.routes.js';
+import truckLogRoutes from './routes/truckLog.routes.js';
+import quarryRoutes from './routes/quarry.routes.js';
+import adminTruckLogRoutes from './routes/adminTruckLog.routes.js';
 
 // Load environment variables
 dotenv.config();
@@ -45,6 +49,9 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Static files for uploads
 app.use('/uploads', express.static('uploads'));
 
+// Make io accessible to routes
+app.set('io', io);
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -58,6 +65,10 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/trucks', truckRoutes);
+app.use('/api/truck-logs', truckLogRoutes);
+app.use('/api/quarries', quarryRoutes);
+app.use('/api/admin-truck-logs', adminTruckLogRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {

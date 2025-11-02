@@ -19,8 +19,9 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Please add an email'],
+    required: false,
     unique: true,
+    sparse: true, // Allow multiple null values
     lowercase: true,
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -33,9 +34,31 @@ const UserSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters'],
     select: false
   },
+  contactNumber: {
+    type: String,
+    required: false,
+    trim: true,
+    validate: {
+      validator: function(v) {
+        if (!v) return true; // Allow empty
+        return /^\d{11}$/.test(v);
+      },
+      message: 'Contact number must be exactly 11 digits'
+    }
+  },
+  location: {
+    type: String,
+    required: [true, 'Please add a location'],
+    trim: true
+  },
+  company: {
+    type: String,
+    required: [true, 'Please add a quarry name'],
+    trim: true
+  },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'superadmin'],
     default: 'user'
   },
   avatar: {
