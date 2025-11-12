@@ -20,6 +20,11 @@ const adminTruckLogSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  truckStatus: {
+    type: String,
+    enum: ['empty', 'half-loaded', 'full'],
+    default: 'full'
+  },
   loggedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

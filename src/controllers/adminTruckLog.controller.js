@@ -28,7 +28,7 @@ export const getAdminTruckLogs = async (req, res, next) => {
     }
     
     const logs = await AdminTruckLog.find(query)
-      .populate('quarryId', 'name location quarryOwner')
+      .populate('quarryId', 'name location proponent')
       .populate('loggedBy', 'name username')
       .sort({ logDate: -1 });
     
@@ -48,7 +48,7 @@ export const getAdminTruckLogs = async (req, res, next) => {
 export const getAdminTruckLog = async (req, res, next) => {
   try {
     const log = await AdminTruckLog.findById(req.params.id)
-      .populate('quarryId', 'name location quarryOwner operator')
+      .populate('quarryId', 'name location proponent operator')
       .populate('loggedBy', 'name username');
     
     if (!log) {
@@ -72,7 +72,7 @@ export const getAdminTruckLog = async (req, res, next) => {
 // @access  Private (Admin only)
 export const createAdminTruckLog = async (req, res, next) => {
   try {
-    const { quarryId, logType, truckCount, notes, logDate } = req.body;
+    const { quarryId, logType, truckCount, notes, logDate, truckStatus } = req.body;
     
     // Verify quarry exists
     const quarry = await Quarry.findById(quarryId);
@@ -89,12 +89,13 @@ export const createAdminTruckLog = async (req, res, next) => {
       logType,
       truckCount,
       notes,
+      truckStatus: truckStatus || 'full',
       logDate: logDate || Date.now(),
       loggedBy: req.user.id
     });
     
     // Populate before sending response
-    await log.populate('quarryId', 'name location quarryOwner');
+    await log.populate('quarryId', 'name location proponent');
     await log.populate('loggedBy', 'name username');
     
     // Emit socket event for real-time update
@@ -125,14 +126,14 @@ export const updateAdminTruckLog = async (req, res, next) => {
       });
     }
     
-    const { truckCount, notes, logDate } = req.body;
+    const { truckCount, notes, logDate, truckStatus } = req.body;
     
     log = await AdminTruckLog.findByIdAndUpdate(
       req.params.id,
-      { truckCount, notes, logDate },
+      { truckCount, notes, logDate, truckStatus },
       { new: true, runValidators: true }
     )
-      .populate('quarryId', 'name location quarryOwner')
+      .populate('quarryId', 'name location proponent')
       .populate('loggedBy', 'name username');
     
     // Emit socket event for real-time update

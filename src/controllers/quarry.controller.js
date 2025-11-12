@@ -48,7 +48,7 @@ export const getQuarry = async (req, res, next) => {
 // @access  Private (Admin only)
 export const createQuarry = async (req, res, next) => {
   try {
-    const { name, location, operator, permitNumber, status, quarryOwner, contactNumber, description } = req.body;
+    const { name, location, operator, permitNumber, dateOfIssuance, dateOfExpiration, status, proponent, area, contactNumber, description } = req.body;
 
     // Check if permit number already exists
     const permitExists = await Quarry.findOne({ permitNumber });
@@ -66,8 +66,11 @@ export const createQuarry = async (req, res, next) => {
       location,
       operator,
       permitNumber,
+      dateOfIssuance,
+      dateOfExpiration,
       status: status || 'Active',
-      quarryOwner,
+      proponent,
+      area,
       contactNumber,
       description,
       addedBy: req.user.id

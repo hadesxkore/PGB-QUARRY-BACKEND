@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const QuarrySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please provide quarry name'],
     trim: true
   },
   location: {
@@ -13,7 +12,6 @@ const QuarrySchema = new mongoose.Schema({
   },
   operator: {
     type: String,
-    required: [true, 'Please provide operator name'],
     trim: true
   },
   permitNumber: {
@@ -22,15 +20,25 @@ const QuarrySchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  dateOfIssuance: {
+    type: Date
+  },
+  dateOfExpiration: {
+    type: Date
+  },
   status: {
     type: String,
     enum: ['Active', 'Inactive', 'Pending'],
     default: 'Active'
   },
-  quarryOwner: {
+  proponent: {
     type: String,
-    required: [true, 'Please provide quarry owner name'],
+    required: [true, 'Please provide proponent name'],
     trim: true
+  },
+  area: {
+    type: Number,
+    min: [0, 'Area must be a positive number']
   },
   contactNumber: {
     type: String,

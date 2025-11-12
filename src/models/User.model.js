@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: [true, 'Please add a name'],
+    required: false,
     trim: true,
     maxlength: [50, 'Name cannot be more than 50 characters']
   },
@@ -48,12 +48,12 @@ const UserSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: [true, 'Please add a location'],
+    required: false,
     trim: true
   },
   company: {
     type: String,
-    required: [true, 'Please add a quarry name'],
+    required: false,
     trim: true
   },
   role: {
@@ -80,7 +80,8 @@ UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     next();
   }
-  const salt = await bcrypt.genSalt(10);
+  // Reduced from 10 to 8 for better performance while maintaining security
+  const salt = await bcrypt.genSalt(8);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
